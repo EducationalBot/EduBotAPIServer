@@ -1,0 +1,32 @@
+version: '2'
+services:
+  postgres:
+    container_name: db
+    ports:
+      - "5435:5432"
+
+  pgadmin:
+    container_name: pgadmin
+    ports:
+      - "5050:5050"
+
+  flower:
+    container_name: flower
+    ports:
+      - "5555:5555"
+
+  backend:
+    container_name: backend
+    ports:
+      - "8000:8000"
+
+  redis:
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  celery:
+    container_name: celery
+
+  celery-beat:
+    container_name: celery-beat

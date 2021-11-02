@@ -2,73 +2,82 @@ version: '2'
 
 services:
   postgres:
-    restart: always
     image: postgres:12-alpine
     volumes:
       - app-db-data:/var/lib/postgresql/data/pgdata
-    ports:
-      - "5435:5432"
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     env_file:
       - .env
-  web:
     restart: always
-    environment:
-      - DJANGO_SECRET_KEY=local
+
+  pgadmin:
+    image: dpage/pgadmin4
     env_file:
       - .env
-    image: web
-    build: ./
+    depends_on:
+      - db
+    restart: always
+
+  backend:
+    image: backend
+    build:
+      context: .
+      dockerfile: docker/backend/backend.dockerfile
+    env_file:
+      - .env
     command: >
       bash -c "python wait_for_postgres.py &&
                ./manage.py migrate &&
                ./manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./:/code
-    ports:
-      - "8000:8000"
     depends_on:
       - postgres
+    restart: always
+
   redis:
+    image: "redis:6.2.6-alpine"
     restart: always
-    image: "redis:alpine"
+
   celery:
-    build: ./
-    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/celery/celery.dockerfile
     container_name: celery
     command: celery -A api worker -l info
-    environment:
-      - DJANGO_SECRET_KEY=local
     env_file:
       - .env
     volumes:
       - ./:/code
-      - ~/data/video/savePath/:/code/data/video/savePath/
-      - ~/data/log/:/code/data/log/
-      - ~/data/:/code/data/
     depends_on:
       - web
       - postgres
       - redis
-  celery-beat:
-    build: .
     restart: always
-    container_name: celery-beat
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./docker/celery_beat/celery_beat.dockerfile
     command: celery -A api beat -l info
-    environment:
-      - DJANGO_SECRET_KEY=local
     env_file:
       - .env
     volumes:
       - ./:/code
-      - ~/data/video/savePath/:/code/data/video/savePath/
-      - ~/data/log/:/code/data/log/
-      - ~/data/:/code/data/
     depends_on:
       - web
       - postgres
       - redis
+    restart: always
+
+  flower:
+    image: mher/flower:0.9.5
+    env_file:
+      - .env
+    ports:
+    - "5555:5555"
+
 
 volumes:
   app-db-data:

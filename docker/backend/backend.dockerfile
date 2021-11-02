@@ -5,9 +5,6 @@ ENV PYTHONUNBUFFERED 1
 COPY ./requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-# INSTALL FFMPEG
-RUN apt-get update -qq && apt-get -y install ffmpeg
-
 # Adds our application code to the image
 COPY . code
 WORKDIR code
