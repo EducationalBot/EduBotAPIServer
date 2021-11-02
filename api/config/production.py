@@ -14,8 +14,8 @@ class Production(Common):
     # https://docs.djangoproject.com/en/2.0/howto/static-files/
     # http://django-storages.readthedocs.org/en/latest/index.html
 
-    CELERY_BROKER_URL = 'redis://redis:6379'
-    CELERY_RESULT_BACKEND = 'redis://redis:6379'
+    CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', '')
+    CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND_URL', '')
     CELERY_ACCEPT_CONTENT = ['application/json']
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'
