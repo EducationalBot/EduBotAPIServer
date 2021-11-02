@@ -1,6 +1,5 @@
 import os
 from os.path import join
-from distutils.util import strtobool
 import dj_database_url
 from configurations import Configuration
 
@@ -107,10 +106,6 @@ class Common(Configuration):
             },
         },
     ]
-
-    # Set DEBUG to False as a default for safety
-    # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-    DEBUG = strtobool(os.getenv('DJANGO_DEBUG', 'no'))
 
     # Password Validation
     # https://docs.djangoproject.com/en/2.0/topics/auth/passwords/#module-django.contrib.auth.password_validation
