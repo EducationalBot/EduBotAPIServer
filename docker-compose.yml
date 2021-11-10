@@ -27,11 +27,11 @@ services:
     env_file:
       - Secrets/EduBotAPIServer/.env
     command: >
-      bash -c "python wait_for_postgres.py &&
+      bash -c "python ./deps/wait_for_postgres.py &&
                ./manage.py migrate &&
                ./manage.py runserver 0.0.0.0:8000 --insecure"
     volumes:
-      - ./:/code
+      - ./src:/code
     depends_on:
       - postgres
     restart: always
@@ -49,7 +49,7 @@ services:
     env_file:
       - Secrets/EduBotAPIServer/.env
     volumes:
-      - ./:/code
+      - ./src:/code
     depends_on:
       - web
       - postgres
@@ -64,7 +64,7 @@ services:
     env_file:
       - Secrets/EduBotAPIServer/.env
     volumes:
-      - ./:/code
+      - ./src:/code
     depends_on:
       - web
       - postgres
