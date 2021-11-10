@@ -8,13 +8,13 @@ services:
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     env_file:
-      - .env
+      - Secrets/EduBotAPIServer/.env
     restart: always
 
   pgadmin:
     image: dpage/pgadmin4
     env_file:
-      - .env
+      - Secrets/EduBotAPIServer/.env
     depends_on:
       - db
     restart: always
@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: docker/backend/backend.dockerfile
     env_file:
-      - .env
+      - Secrets/EduBotAPIServer/.env
     command: >
       bash -c "python wait_for_postgres.py &&
                ./manage.py migrate &&
@@ -47,7 +47,7 @@ services:
     container_name: celery
     command: celery -A api worker -l info
     env_file:
-      - .env
+      - Secrets/EduBotAPIServer/.env
     volumes:
       - ./:/code
     depends_on:
@@ -62,7 +62,7 @@ services:
       dockerfile: ./docker/celery_beat/celery_beat.dockerfile
     command: celery -A api beat -l info
     env_file:
-      - .env
+      - Secrets/EduBotAPIServer/.env
     volumes:
       - ./:/code
     depends_on:
@@ -74,7 +74,7 @@ services:
   flower:
     image: mher/flower:0.9.5
     env_file:
-      - .env
+      - Secrets/EduBotAPIServer/.env
     ports:
     - "5555:5555"
 
